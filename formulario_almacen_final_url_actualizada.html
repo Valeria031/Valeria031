@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Almacén</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        label, select, input, button {
+            display: block;
+            margin: 10px 0;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Formulario de Registro de Almacén</h2>
+
+    <form id="almacenForm">
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" name="categoria" required>
+            <option value="">Seleccione una categoría</option>
+            <option value="pintura">Pintura</option>
+            <option value="electricidad">Electricidad</option>
+    <option value="fontaneria">Fontanería</option>
+    <option value="limpieza">Limpieza</option>
+    <option value="herramienta">Herramienta</option>
+        </select>
+
+        <label for="item">Material / Herramienta:</label>
+        <select id="item" name="item" required>
+            <option value="">Seleccione un material o herramienta</option>
+        </select>
+
+        <label for="movimiento">Movimiento:</label>
+        <select id="movimiento" name="movimiento" required>
+            <option value="entrada">Entrada</option>
+            <option value="salida">Salida</option>
+        </select>
+
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" name="cantidad" min="1" required>
+
+        <button type="submit">Registrar</button>
+    </form>
+
+    <p id="respuesta"></p>
+
+    <script>
+        const itemsPorCategoria = {
+            pintura: [
+                "Mango de rodillo pequeño", "Mango de rodillo mediano", "Mango de rodillo grande",
+                "Pinceles", "Brochas", "Esponja vegetal", "Bandeja pintura grande", "Bandeja pintura pequeña",
+                "Rodillo de espuma", "Rodillo de alambre", "Pintura blanca despachar", "Pintura negra ovaldine",
+                "Pintura mate gris ovaldine", "Pintura mate blanca juno", "Pintura aceite azul",
+                "Pintura aceite amarilla", "Pintura fachada amarilla krill", "Pintura fachada beige titan",
+                "Pintura fachada naranja titan", "Barniz sapeli", "Pintura REP puertas sapeli",
+                "Pintura blanca monto", "Pintura blanca antimanchas", "Pintura blanca antimanchas spray",
+                "Pintura verde bupisa", "Pintura hueso fachada", "Pintura bajo azul fachada", "Pintura césped",
+                "Pintura mate blanco bruguer", "Pintura verde monto", "Pintura gris monto", "Pintura blanca",
+                "Pintura aceite gris", "Pintura suelo gris", "Pintura hueso", "Tinte siena", "Tinte negro",
+                "Tinte al agua rojo", "Tinte al agua negro", "Lija 80", "Lija madera 80", "Lija madera 120",
+                "Lija madera 180", "Lija banda madera 180", "Lija metal 240", "Lija metal 1000", "Cinta de pintor ancha"
+            ],
+            electricidad: [
+                "Caja de mecanismos pladur triple", "Caja de mecanismos pladur doble", "Caja de mecanismos pladur sencilla",
+                "Caja de mecanismos de obra", "Caja de registro de obra grande", "Caja de registro de obra mediana",
+                "Caja de registro de obra pequeña", "Caja de registro pladur grande", "Caja de registro pladur mediana",
+                "Caja de registro exterior pequeña", "Tapas redondas de registro pequeña", "Tapas cuadradas de registro grande",
+                "Tapas cuadradas de registro mediana", "Tapas de registro pequeña", "Protectores para luminarias",
+                "Regletas de conexión medianas", "Regletas de conexión pequeñas", "Regleta de polos", "Cabeza enchufe",
+                "Enchufe de empalme", "Enchufe superficie sencillo", "Enchufe superficie doble", "Enchufe lika",
+                "Enchufe única", "Interruptor superficie sencillo", "Embelledor sencillo lika", "Embelledor doble lika",
+                "Embelledor sencillo miluz", "Embelledor doble miluz", "Embelledor triple miluz", "Embelledor pequeño davia",
+                "Embelledor sencillo unica", "Embelledor doble unica", "Embelledor triple plata unica", "Embelledor interno",
+                "Embelledor interno unica", "Embelledor antiguo doble", "Tapa ciega miluz", "Conmutado unica", "Conmutado miluz",
+                "RJ12 unica", "Salida de cable unica", "Diferencial C10", "Diferencial C16", "Diferencial C40",
+                "Diferencial de puenteo", "IPC antiguo", "Bombilla E27 redonda", "Bombilla E27", "Bombilla GU10",
+                "Bombilla E27 espiral", "Bombilla lámpara", "Fusible", "Led superficie espejo", "Plafón grande blanco",
+                "Plafón grande plata", "Cuadro 14 mod superficie", "Timbre compacto", "Telefonillo sencillo",
+                "Caja de retazos cables", "Cable 2.5 mm tierra", "Cable 2.5 mm azul", "Cable 2.5 mm gris", "Cable 1.5 mm azul",
+                "Cable 1.5 mm marrón", "Cable de 5 líneas", "Cable de internet", "Cable TV", "Cable RJ 45", "Cable teléfono",
+                "Cable 4 mm marrón"
+            ]
+        };
+
+        const categoriaSelect = document.getElementById('categoria');
+        const itemSelect = document.getElementById('item');
+        const form = document.getElementById('almacenForm');
+        const respuesta = document.getElementById('respuesta');
+
+        categoriaSelect.addEventListener('change', function() {
+            const categoria = this.value;
+            itemSelect.innerHTML = '<option value="">Seleccione un material o herramienta</option>';
+            if (itemsPorCategoria[categoria]) {
+                itemsPorCategoria[categoria].forEach(function(item) {
+                    const option = document.createElement('option');
+                    option.value = item;
+                    option.textContent = item;
+                    itemSelect.appendChild(option);
+                });
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = new FormData(form);
+            fetch("https://script.google.com/macros/s/AKfycbzeswqmRv8ABg996EVGWlNmZZ35o9yBZ1sJt4kZxRHYB5fjB9NkZg872yON_bWcKJAy/exec", {
+                method: "POST",
+                body: data
+            })
+            .then(response => response.text())
+            .then(result => {
+                respuesta.textContent = "✅ Guardado exitosamente";
+                form.reset();
+                itemSelect.innerHTML = '<option value="">Seleccione un material o herramienta</option>';
+            })
+            .catch(error => {
+                respuesta.textContent = "❌ Error al guardar";
+                console.error(error);
+            });
+        });
+    </script>
+
+</body>
+</html>
